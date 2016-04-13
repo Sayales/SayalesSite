@@ -1,0 +1,12 @@
+.ltext {
+    display: block;
+    float: left;
+    width: 550px;
+    border: 1px solid #000;
+}
+.rtext {
+    display: block;
+    float: right;
+    width: 550px;
+    border: 1px solid #000;
+}
