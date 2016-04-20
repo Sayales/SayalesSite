@@ -4,6 +4,7 @@ import com.myvisitpage.model.CustomerMessage;
 import com.myvisitpage.model.Project;
 import com.myvisitpage.model.ProjectChunk;
 import com.myvisitpage.model.User;
+import com.myvisitpage.model.ajax.AjaxSignResponse;
 import com.myvisitpage.service.CustomerMessageService;
 import com.myvisitpage.service.ProjectService;
 import com.myvisitpage.service.RoleService;
@@ -15,10 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
@@ -56,7 +54,21 @@ public class MainSiteController {
     public String index(Model model) {
 
         model.addAttribute("name", getLoggedUsername());
+        model.addAttribute("newUser", new User());
         return "hello";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/hello/is_valid", method = RequestMethod.GET)
+    public AjaxSignResponse checkEmail(@RequestParam String email) {
+        AjaxSignResponse response = new AjaxSignResponse();
+        if (userService.getByEmail(email) != null) {
+            response.setAnsw("201");
+        }
+        else {
+            response.setAnsw("200");
+        }
+        return response;
     }
 
     @RequestMapping(value = "/credits")

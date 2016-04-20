@@ -18,7 +18,7 @@ public class ProjectChunk implements Serializable {
     @Column(name = "chunk_id")
     private int id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
 

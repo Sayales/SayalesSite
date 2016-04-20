@@ -37,7 +37,7 @@ public class Project implements Serializable {
     @Column(name = "user_email")
     private String userEmail;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project", cascade = CascadeType.REMOVE)
     private Set<ProjectChunk> chunks = new HashSet<>();
 
     public Project() {

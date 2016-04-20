@@ -20,6 +20,9 @@ public class CustomerMessageService {
     public List<CustomerMessage> getAllByEmail(String email) {
         return repository.getAllByEmail(email);
     }
+    public List<CustomerMessage> getAllByEmail(String email, int pageNum) {
+        return repository.getAllByEmail(email, pageNum);
+    }
 
     public void save(CustomerMessage message) {
         repository.save(message);

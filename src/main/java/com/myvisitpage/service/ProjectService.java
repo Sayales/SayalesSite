@@ -8,6 +8,7 @@ import com.myvisitpage.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,14 +41,25 @@ public class ProjectService {
 
 
 
-    public void addChunk(ProjectChunk chunk, int projectId, String userEmail) throws NotFoundException {
-        Project p = get(projectId,userEmail);
+    public void addChunk(ProjectChunk chunk, int projectId) throws NotFoundException {
+        Project p = repository.get(projectId);
         p.getChunks().add(chunk);
         repository.save(p);
     }
 
     public Set<ProjectChunk> getChunks(int projectId, String userEmail) throws NotFoundException {
-        return get(projectId, userEmail).getChunks();
+         Set<ProjectChunk> res = get(projectId, userEmail).getChunks();
+        if (res == null) {
+            return new HashSet<>();
+        }
+        return res;
     }
 
+    public Set<ProjectChunk> getChunks(int projectId) throws NotFoundException {
+        Set<ProjectChunk> res = repository.get(projectId).getChunks();
+        if (res == null) {
+            return new HashSet<>();
+        }
+        return res;
+    }
 }

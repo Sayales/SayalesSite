@@ -1,13 +1,7 @@
 package com.myvisitpage.controller;
 
-import com.myvisitpage.model.CustomerMessage;
-import com.myvisitpage.model.Project;
-import com.myvisitpage.model.Role;
-import com.myvisitpage.model.User;
-import com.myvisitpage.service.CustomerMessageService;
-import com.myvisitpage.service.ProjectService;
-import com.myvisitpage.service.RoleService;
-import com.myvisitpage.service.UserService;
+import com.myvisitpage.model.*;
+import com.myvisitpage.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.access.annotation.Secured;
@@ -37,7 +31,8 @@ public class AdminSiteController {
     private RoleService roleService;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private ChunkService chunkService;
     /*
    * User list logic
    * */
@@ -113,5 +108,14 @@ public class AdminSiteController {
         User u = userService.getByEmail(messageService.getById(id).getUserEmail());
         messageService.deleteById(id);
         return customersAdminGet(u.getId(),model);
+    }
+    /*
+    * Project chunks
+    * */
+    @RequestMapping(value = "/admin_chunk_delete", method = RequestMethod.GET)
+    public ModelAndView chunkDelete(@RequestParam(value = "id", required = true) int id) {
+        ProjectChunk ch = chunkService.get(id);
+        chunkService.delete(id);
+        return new ModelAndView("project", "chunks", projectService.getChunks(ch.getProject().getId()));
     }
 }

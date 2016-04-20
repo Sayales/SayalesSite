@@ -79,7 +79,9 @@ public class ProjectRepository {
             return null;
         }
     }
-
+    public Project get(int id) {
+       return sessionFactory.getCurrentSession().get(Project.class, id);
+    }
     @SuppressWarnings("unchecked")
     public List<Project> getAll(String userEmail) {
         Session session = sessionFactory.getCurrentSession();

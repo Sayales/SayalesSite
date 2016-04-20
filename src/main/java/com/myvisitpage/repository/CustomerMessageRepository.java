@@ -97,6 +97,17 @@ public class CustomerMessageRepository {
         return criteria.list();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<CustomerMessage> getAllByEmail(String email, int pageNum) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(CustomerMessage.class)
+                .add(Restrictions.eq("userEmail",email))
+                .addOrder(Order.desc("dateTime"));
+        criteria.setFirstResult((pageNum - 1) * 30);
+        criteria.setMaxResults(30);
+        return criteria.list();
+    }
+
     public CustomerMessage get(int id) {
         return sessionFactory.getCurrentSession().get(CustomerMessage.class, id);
     }

@@ -8,12 +8,14 @@
     <title>Hello page</title>
 </head>
 <body>
-<h1>Hello everyone</h1>
+<!--<h1>Hello everyone</h1>
 <p>Hi I am Pavel, and I develop some visit page</p> <br>
 <ul>
     <li><a href="/login">Login</a></li>
     <li><a href="/customers">For customers</a> </li>
     <li><a href="/credits">Credentials</a></li>
-</ul>
+    <li><a href="/sign-up">Sign up!</a> </li>
+</ul>-->
+<% response.sendRedirect("/hello"); %>
 </body>
 </html>
