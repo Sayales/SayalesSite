@@ -54,7 +54,6 @@ public class MainSiteController {
     public String index(Model model) {
 
         model.addAttribute("name", getLoggedUsername());
-        model.addAttribute("newUser", new User());
         return "hello";
     }
 
