@@ -2,7 +2,8 @@
 <%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.Instant" %>
 <%@ page import="java.time.ZoneId" %>
-<%@ page import="com.myvisitpage.util.ProjectUtil" %><%--
+<%@ page import="com.myvisitpage.util.ProjectUtil" %>
+<%@ page import="com.myvisitpage.util.LoggedUser" %><%--
   Created by IntelliJ IDEA.
   User: Павел
   Date: 01.04.2016
@@ -15,41 +16,72 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <title>Title</title>
-    <script type="text/javascript">
-        function deleteMessage(id){
-            var ans = confirm('Are u sure `bout dis?');
-            if(ans) {
-                window.location.assign("/admin_message_delete?id=" + id);
-            }
-        }
-        function messageAdd() {
-            var ans = confirm('Are u sure `bout dis?');
-            if(ans) {
-                window.location.assign('/add-message');
-            }
-        }
-    </script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <title>Messages and projects</title>
+    <script type="text/javascript" src="<c:url value="/resources/js/customers.js"/>"></script>
 </head>
 <body>
-<h1>Messages and Projects</h1>
 <div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Sayales</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/hello">Home</a></li>
+                    <li class="active"><a href="/customers">For customers</a></li>
+                    <li><a href="/credits">Credentials</a></li>
+                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                        <li><a href="/admin_userlist">Users</a></li>
+                    </sec:authorize>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <sec:authorize access="hasRole('ROLE_ANONYMOUS')">
+                        <li><a href="/sign-up"><span class="glyphicon glyphicon glyphicon-pencil"/> SignUp</a></li>
+                        <li><a href="/login"><span class="glyphicon glyphicon-log-in"/> Login</a></li>
+                    </sec:authorize>
+                    <sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
+                        <li><a href="#"><span class="glyphicon glyphicon-user"/> <%= LoggedUser.getName()%>
+                        </a></li>
+                        <li><a href="#" onclick="logOut();"><span class="glyphicon glyphicon-log-out"/> Logout</a></li>
+                    </sec:authorize>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
     <div class="row">
         <div class="col-md-6">
-            <table>
+            <table class="table">
                 <c:forEach items="${messages}" var="message">
                     <jsp:useBean id="message" scope="page" type="com.myvisitpage.model.CustomerMessage"/>
                     <tr>
                         <td><c:out value="${message.id}"/></td>
-                        <td><c:out value="${message.text}"/></td>
+                        <td>
+                            <a href="#" onclick="showModal(${message.id})" <%--class="btn btn-link"  data-toggle="modal" data-target="#messageModal" data-whatever="${message.id}"--%>>
+                                ${message.title}
+                            </a>
+                        </td>
                         <td><%=
                         TimeUtil.toString(message.getDateTime())
                         %>
                         </td>
                         <td><a href="/${admin_label}message_update?id=${message.id}">Update</a></td>
-                        <td><a href="/${admin_label}message_delete?id=${message.id}" onclick="deleteMessage(${message.id})">Delete</a></td>
+                        <td><a href="/${admin_label}message_delete?id=${message.id}"
+                               onclick="deleteMessage(${message.id})">Delete</a></td>
                     </tr>
+                    <!-- Modal -->
                 </c:forEach>
             </table>
             <form:form method="post" commandName="customerMessage" action="${admin_label}add-message">
@@ -58,7 +90,7 @@
                 <form:hidden path="userEmail"/>
                 <form:label path="text">Message text: </form:label>
                 <form:input path="text"/>
-                <input type="submit" class="button" value="${message_button_text}" onclick="messageAdd()" tabindex="5">
+                <input type="submit" class="button" value="${message_button_text}" tabindex="5">
             </form:form>
         </div>
         <div class="col-md-6">
@@ -96,5 +128,35 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Message</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="message-text">Text</label>
+                        <p id="message-text"
+                           class="form-control-static">Hello i`m modal</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <%-- <button type="button" class="btn btn-primary">Save changes</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<form name="logOutForm" method="post" action="/logout" style="visibility: hidden">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <button type="submit"><span class="glyphicon glyphicon-log-out"/> Logout
+    </button>
+</form>
 </body>
 </html>

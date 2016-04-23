@@ -9,6 +9,7 @@ import com.myvisitpage.service.CustomerMessageService;
 import com.myvisitpage.service.ProjectService;
 import com.myvisitpage.service.RoleService;
 import com.myvisitpage.service.UserService;
+import com.myvisitpage.util.LoggedUser;
 import com.myvisitpage.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -40,6 +41,7 @@ public class MainSiteController {
     private UserService userService;
 
 
+
     private Function<Model, String> customerGet = this::customerPageGet;
 
     @FunctionalInterface
@@ -52,8 +54,8 @@ public class MainSiteController {
     * */
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public String index(Model model) {
-
-        model.addAttribute("name", getLoggedUsername());
+        String loggedName = getLoggedUsername();
+        model.addAttribute("name", LoggedUser.getName());
         return "hello";
     }
 
@@ -62,10 +64,10 @@ public class MainSiteController {
     public AjaxSignResponse checkEmail(@RequestParam String email) {
         AjaxSignResponse response = new AjaxSignResponse();
         if (userService.getByEmail(email) != null) {
-            response.setAnsw("201");
+            response.setAnswer("201");
         }
         else {
-            response.setAnsw("200");
+            response.setAnswer("200");
         }
         return response;
     }
@@ -154,6 +156,22 @@ public class MainSiteController {
         Function2<Integer, String, Void> func = (a, b) -> messageService.delete(a, b);
         return excCheck(func, id, customerGet, model);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/customers/show_message", method = RequestMethod.GET)
+    public AjaxSignResponse showMessage(@RequestParam String id) {
+        int messageId = Integer.parseInt(id);
+        AjaxSignResponse response = new AjaxSignResponse();
+        try {
+            response.setText(messageService.get(messageId, getLoggedUsername()).getText());
+            response.setAnswer("200");
+        }
+        catch (NotFoundException e) {
+            response.setText("Don`t cheat");
+        }
+        return response;
+    }
+
     /*
     * Project page methods
     * */

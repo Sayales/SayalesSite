@@ -5,6 +5,7 @@
   Time: 15:40
   To change this template use File | Settings | File Templates.
 --%>
+<!--TODO: add logout form on all pages!-->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -17,14 +18,13 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="<c:url value="/resources/js/validate.js"/> "></script>
+    <script>
+        function logOut(){
+            document.logOutForm.submit();
+        }
+    </script>
 </head>
 <body>
-<script>
-    function logOut(){
-        document.logOutForm.submit();
-    }
-</script>
 <div class="container">
     <nav class="navbar navbar-default">
         <div class="container-fluid">

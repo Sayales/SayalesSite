@@ -23,6 +23,9 @@ public class CustomerMessage implements Serializable{
     @Column(name = "text")
     private String text;
 
+    @Column(name = "title")
+    private String title = "Default title"; //default title for testing?
+
     @Column(name = "date_time")
     private LocalDateTime dateTime;
 
@@ -44,6 +47,14 @@ public class CustomerMessage implements Serializable{
     public CustomerMessage(String text, LocalDateTime dateTime) {
         this.text = text;
         this.dateTime = dateTime;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Integer getId() {

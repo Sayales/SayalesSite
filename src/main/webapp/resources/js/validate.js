@@ -15,10 +15,10 @@ function checkForm() {
         timeout : 100000,
         async : false,
         success : function(data) {
-            msg = data.answ;
+            msg = data.answer;
         }
     });
-    if (msg != '200') {
+    if (msg != '200' || inputEmail == null || inputEmail == '') {
         $("#signform").append('<div class="alert alert-danger fade in"> <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
             ' <strong>Wrong nickname!</strong> Please try another one.</div>');
         return false;
@@ -30,3 +30,4 @@ function checkForm() {
         return false;
     }
 }
+
